@@ -4,6 +4,7 @@ var cookieParser = require("cookie-parser");
 var logger = require("morgan");
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
+const index = require('./routes/index');
 
 var app = express();
 
@@ -24,6 +25,8 @@ mongoose.connect(
     }
   }
 );
+
+app.use(index);
 
 app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "../public/index.html"));

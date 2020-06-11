@@ -1,0 +1,12 @@
+<mat-toolbar fxLayoutGap="15px">
+  <span class="link" routerLink="/">DymaAws</span>
+  <span fxFlex="auto"></span>
+  <div *ngIf="!jwtToken.isAuthenticated" fxLayoutGap="15px">
+    <span class="link" routerLink="/signin">Connexion</span>
+    <span class="link" routerLink="/signup">Inscription</span>
+  </div>
+  <div *ngIf="jwtToken.isAuthenticated">
+    <span class="link" routerLink="/" (click)="logout()">Déconnexion</span>
+  </div>
+  
+</mat-toolbar>
