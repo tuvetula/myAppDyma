@@ -1,11 +1,11 @@
 import { NgModule } from "@angular/core";
 import { Routes, RouterModule } from "@angular/router";
+import { ProfileModule } from './profile/profile.module';
 //Components
 import { PageNotFoundComponent } from "./page-not-found/page-not-found.component";
-import { HomepageComponent } from './homepage/homepage.component';
-import { SigninComponent } from './auth/signin/signin.component';
-import { SignupComponent } from './auth/signup/signup.component';
-import { ProfileComponent } from './profile/profile.component';
+import { HomepageComponent } from './components/homepage/homepage.component';
+import { SigninComponent } from './components/signin/signin.component';
+import { SignupComponent } from './components/signup/signup.component';
 
 //Guards
 import { AuthGuard } from './shared/guards/auth.guard';
@@ -14,7 +14,7 @@ const routes: Routes = [
   { path: "", component: HomepageComponent, pathMatch: "full" },
   { path: "signin" , component: SigninComponent },
   { path: "signup" , component: SignupComponent },
-  { path: "profile" , component: ProfileComponent , canActivate:[AuthGuard]},
+  { path: "profile" , canActivate:[AuthGuard] , loadChildren: () => ProfileModule},
   { path: "**", component: PageNotFoundComponent },
 ];
 

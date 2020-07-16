@@ -1,57 +1,40 @@
 // Modules natifs
 import { BrowserModule } from "@angular/platform-browser";
 import { NgModule } from "@angular/core";
-import { HttpClientModule, HTTP_INTERCEPTORS } from "@angular/common/http";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
-import { ReactiveFormsModule } from "@angular/forms";
-
-//Modules
-import { LayoutModule } from "./shared/layout/layout.module";
 
 //Routing
 import { AppRoutingModule } from "./app-routing.module";
 
 //Components
 import { AppComponent } from "./app.component";
-import { PageNotFoundComponent } from "./page-not-found/page-not-found.component";
-import { HomepageComponent } from "./homepage/homepage.component";
-import { SignupComponent } from "./auth/signup/signup.component";
-import { SigninComponent } from "./auth/signin/signin.component";
-import { TopbarComponent } from "./shared/components/topbar/topbar.component";
+import { CoreModule } from './shared/modules/core.module';
 
-//Services
-import { AuthService } from "./shared/services/auth.service";
-import { ProfileComponent } from "./profile/profile.component";
+//ngrx
+import { StoreModule } from '@ngrx/store';
+import { EffectsModule } from '@ngrx/effects';
+import { StoreDevtoolsModule } from '@ngrx/store-devtools'
+import { environment } from 'src/environments/environment';
+import { reducersMap } from './shared/store';
 
-//Interceptors
-import { AuthInterceptor } from "./shared/interceptors/auth.interceptor";
 
 @NgModule({
   declarations: [
     AppComponent,
-    PageNotFoundComponent,
-    HomepageComponent,
-    SignupComponent,
-    SigninComponent,
-    TopbarComponent,
-    ProfileComponent,
   ],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
-    ReactiveFormsModule,
-    HttpClientModule,
-    LayoutModule,
+    CoreModule,
+    StoreModule.forRoot(reducersMap),
+    // EffectsModule.forRoot([]),
+    StoreDevtoolsModule.instrument({
+      name: 'ngrx photos',
+      logOnly: environment.production
+    }),
     AppRoutingModule,
   ],
-  providers: [
-    AuthService,
-    {
-      provide: HTTP_INTERCEPTORS,
-      useClass: AuthInterceptor,
-      multi: true,
-    },
-  ],
+  providers: [],
   bootstrap: [AppComponent],
 })
 export class AppModule {}
