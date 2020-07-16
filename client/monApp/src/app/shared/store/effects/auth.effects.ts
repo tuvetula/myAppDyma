@@ -76,8 +76,8 @@ export class AuthEffects {
     tap(() => {
       if (!this.timerSubscription) {
         this.timerSubscription = this.authService.initTimer().subscribe();
+        this.router.navigate(["/"]);
       }
-      this.router.navigate(["/"]);
     })
   );
 
