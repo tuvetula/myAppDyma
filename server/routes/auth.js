@@ -5,7 +5,7 @@ const bcrypt = require("bcrypt");
 //Librairie creation token
 const jwt = require("jsonwebtoken");
 const fs = require("fs");
-const RSA_PRIVATE_KEY = fs.readFileSync("./rsa/key");
+const RSA_PRIVATE_KEY = fs.readFileSync("./hideData/rsa/key");
 
 router.post("/signup", (req, res) => {
   const newUser = new User({

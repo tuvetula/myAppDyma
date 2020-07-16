@@ -1,6 +1,6 @@
 const router = require('express').Router();
 const fs = require('fs');
-const RSA_PUBLIC_KEY = fs.readFileSync('./rsa/key.pub');
+const RSA_PUBLIC_KEY = fs.readFileSync('./hideData/rsa/key.pub');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user.model');
 

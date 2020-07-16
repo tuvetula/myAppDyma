@@ -5,6 +5,7 @@ var logger = require("morgan");
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const index = require('./routes/index');
+const mongoDbLink = require('./hideData/mongodb');
 
 var app = express();
 
@@ -14,8 +15,8 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "../public")));
 
-mongoose.connect(
- "mongodb+srv://tuvetula:Tuvetul@1982@cluster0.dz70q.gcp.mongodb.net/dyma_Angular_Cours?retryWrites=true&w=majority",
+mongoose.connect(mongoDbLink
+ ,
   { keepAlive: true, useUnifiedTopology: true, useNewUrlParser: true },
   (err) => {
     if (err) {
