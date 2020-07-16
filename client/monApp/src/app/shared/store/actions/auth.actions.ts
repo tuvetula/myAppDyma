@@ -1,5 +1,6 @@
 import { Action } from "@ngrx/store";
 import { User } from "../../models/user.model";
+import { CredentialModel } from '../../models/credential.model';
 
 export const TRY_SIGNUP = "[ user ] try signup";
 export const SIGNUP_SUCCESS = "[ user ] signup success";
@@ -12,13 +13,15 @@ export const SIGNIN_ERROR = "[ user ] signin error";
 export const TRY_FETCH_CURRENT_USER = "[ user ] try fetch current user";
 export const SET_CURRENT_USER = "[ user ] set current user";
 
+export const TRY_REFRESH_TOKEN = "[ user ] try refresh token";
+
 export class TrySignup implements Action {
   readonly type = TRY_SIGNUP;
   constructor(public payload: User) {}
 }
 export class SignupSuccess implements Action {
   readonly type = SIGNUP_SUCCESS;
-  constructor(public payload: User) {}
+  constructor(public payload: string) {}
 }
 export class SignupError implements Action {
   readonly type = SIGNUP_ERROR;
@@ -26,7 +29,7 @@ export class SignupError implements Action {
 }
 export class TrySignin implements Action {
   readonly type = TRY_SIGNIN;
-  constructor(public payload: { email: string; password: string }) {}
+  constructor(public payload: CredentialModel) {}
 }
 export class SigninSuccess implements Action {
   readonly type = SIGNIN_SUCCESS;
@@ -43,6 +46,9 @@ export class SetCurrentUser implements Action {
   readonly type = SET_CURRENT_USER;
   constructor(public payload: User) {}
 }
+export class TryRefreshToken implements Action {
+    readonly type = TRY_REFRESH_TOKEN;
+}
 
 export type AuthActions =
   | TrySignup
@@ -52,4 +58,5 @@ export type AuthActions =
   | SigninSuccess
   | SigninError
   | TryFetchCurrentUser
-  | SetCurrentUser;
+  | SetCurrentUser
+  | TryRefreshToken;

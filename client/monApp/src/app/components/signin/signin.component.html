@@ -15,9 +15,10 @@
                 <div *ngIf="errorsForm.password" class="alert alert-danger mw-100">
                     {{ errorsForm.password}}
                 </div>
-                <div class="alert alert-danger" *ngIf="errorConnection">{{ errorConnection }}</div>
+                <div class="alert alert-danger" *ngIf="signinError$ | async; let error">{{ error }}</div>
                 <button mat-raised-button color="primary" (click)="submit()">Connexion</button>
             </form>
+
         </mat-card-content>
     </mat-card>
 </div>

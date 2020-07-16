@@ -1,8 +1,11 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Subscription } from 'rxjs';
+import { Subscription, Observable } from 'rxjs';
 import { AuthService } from '../../services/auth.service';
 import { JwtToken } from "../../models/jwt-token.model";
 import { Router } from '@angular/router';
+import { Store, select } from '@ngrx/store';
+import { State } from '../../store';
+import { authIsLoggedInSelector } from '../../store/selectors/auth.selectors';
 
 @Component({
   selector: 'app-topbar',
@@ -10,26 +13,21 @@ import { Router } from '@angular/router';
   styleUrls: ['./topbar.component.css']
 })
 export class TopbarComponent implements OnInit , OnDestroy{
-  public tokenSubscription: Subscription;
-  public jwtToken: JwtToken;
+  public isLoggedIn$: Observable<boolean>;
 
   constructor(
-    private authService: AuthService,
+    private store: Store<State>
   ) { }
 
   ngOnInit(): void {
-    this.tokenSubscription = this.authService.jwtToken.subscribe(
-      (jwtToken: JwtToken) => this.jwtToken = jwtToken
+    this.isLoggedIn$ = this.store.pipe(
+      select(authIsLoggedInSelector)
     )
   }
 
   public logout(){
-    this.authService.logout();
   }
 
   ngOnDestroy(): void {
-    if(this.tokenSubscription){
-      this.tokenSubscription.unsubscribe();
-    }
   }
 }

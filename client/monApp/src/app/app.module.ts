@@ -16,6 +16,7 @@ import { EffectsModule } from '@ngrx/effects';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools'
 import { environment } from 'src/environments/environment';
 import { reducersMap } from './shared/store';
+import { AuthEffects } from './shared/store/effects/auth.effects';
 
 
 @NgModule({
@@ -26,8 +27,8 @@ import { reducersMap } from './shared/store';
     BrowserModule,
     BrowserAnimationsModule,
     CoreModule,
-    StoreModule.forRoot(reducersMap),
-    // EffectsModule.forRoot([]),
+    StoreModule.forRoot( reducersMap ),
+    EffectsModule.forRoot([AuthEffects]),
     StoreDevtoolsModule.instrument({
       name: 'ngrx photos',
       logOnly: environment.production

@@ -2,6 +2,11 @@ import { Component, OnInit } from "@angular/core";
 import { FormGroup, FormBuilder, Validators } from "@angular/forms";
 import { AuthService } from "src/app/shared/services/auth.service";
 import { Router } from "@angular/router";
+import { Store, select } from '@ngrx/store';
+import { State } from '../../shared/store/index';
+import { TrySignin } from 'src/app/shared/store/actions/auth.actions';
+import { Observable } from 'rxjs';
+import { authErrorSelector } from 'src/app/shared/store/selectors/auth.selectors';
 
 @Component({
   selector: "app-signin",
@@ -23,12 +28,13 @@ export class SigninComponent implements OnInit {
       minlength: "Le mot de passe est composé d'au moins 8 caractères.",
     },
   };
-  public errorConnection: string;
+  public signinError$: Observable<string>;
 
   constructor(
     private fb: FormBuilder,
     private router: Router,
-    private authService: AuthService
+    private authService: AuthService,
+    private store: Store<State> 
   ) {}
 
   ngOnInit(): void {
@@ -36,15 +42,13 @@ export class SigninComponent implements OnInit {
       email: ["", [Validators.required, Validators.email]],
       password: ["", Validators.minLength(8)],
     });
+    this.signinError$ = this.store.pipe(
+      select(authErrorSelector)
+    )
   }
 
   public submit(): void {
-    if (!this.changeStatusForm()) {
-      this.authService.signin(this.signinForm.value).subscribe(() => {
-        this.router.navigate(["/"]);
-      },
-      err => this.errorConnection = err.error);
-    }
+   this.store.dispatch(new TrySignin(this.signinForm.value));
   }
 
   private changeStatusForm(): Boolean {
