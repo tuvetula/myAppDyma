@@ -2,6 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { AuthService } from '../../services/auth.service';
 import { JwtToken } from "../../models/jwt-token.model";
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-topbar',
@@ -13,7 +14,7 @@ export class TopbarComponent implements OnInit , OnDestroy{
   public jwtToken: JwtToken;
 
   constructor(
-    private authService: AuthService
+    private authService: AuthService,
   ) { }
 
   ngOnInit(): void {
@@ -31,5 +32,4 @@ export class TopbarComponent implements OnInit , OnDestroy{
       this.tokenSubscription.unsubscribe();
     }
   }
-
 }
