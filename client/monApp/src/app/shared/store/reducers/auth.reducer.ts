@@ -6,14 +6,15 @@ import {
   SIGNUP_SUCCESS,
   SIGNIN_ERROR,
   SIGNIN_SUCCESS,
+  LOGOUT,
 } from "../actions/auth.actions";
 
 export interface AuthState {
   user: User;
+  isLoggedIn: boolean;
   token: string;
   error: string;
   success: string;
-  isLoggedIn: boolean;
 }
 
 export function authReducer(state: AuthState, action: AuthActions) {
@@ -25,10 +26,19 @@ export function authReducer(state: AuthState, action: AuthActions) {
       return { ...state, error: action.payload };
     }
     case SIGNIN_SUCCESS: {
-        return { ...state , token: action.payload , isLoggedIn: true , error: null}
+      return { ...state, token: action.payload, isLoggedIn: true, error: null };
     }
     case SIGNIN_ERROR: {
       return { ...state, error: action.payload };
+    }
+    case LOGOUT: {
+      return {
+        user: null,
+        isLoggedIn: false,
+        token: null,
+        error: null,
+        success: null,
+      };
     }
   }
   return state;

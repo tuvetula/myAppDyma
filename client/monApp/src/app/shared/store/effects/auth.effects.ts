@@ -10,8 +10,8 @@ import {
   SigninError,
   SigninSuccess,
   SIGNIN_SUCCESS,
-  TryRefreshToken,
   TRY_REFRESH_TOKEN,
+  LOGOUT,
 } from "../actions/auth.actions";
 import { map, switchMap, catchError, tap } from "rxjs/operators";
 import { User } from "../../models/user.model";
@@ -85,6 +85,18 @@ export class AuthEffects {
           }
           return empty();
       })
+  );
+  //Effet suite au dispatch de l'action tryRefreshToken,
+  //On tente de refresh le token avec la requete http et lance l'action SigninSuccess
+  @Effect({dispatch: false}) logout$ = this.actions$.pipe(
+    ofType(LOGOUT),
+    tap(() => {
+        if(this.timerSubscription){
+            this.timerSubscription.unsubscribe();
+        }
+        localStorage.removeItem('jwtToken');
+        this.router.navigate(['/signin']);
+    })
   );
   private timerSubscription: Subscription;
 

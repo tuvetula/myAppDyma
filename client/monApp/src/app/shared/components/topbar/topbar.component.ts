@@ -6,6 +6,7 @@ import { Router } from '@angular/router';
 import { Store, select } from '@ngrx/store';
 import { State } from '../../store';
 import { authIsLoggedInSelector } from '../../store/selectors/auth.selectors';
+import { Logout } from '../../store/actions/auth.actions';
 
 @Component({
   selector: 'app-topbar',
@@ -26,6 +27,7 @@ export class TopbarComponent implements OnInit , OnDestroy{
   }
 
   public logout(){
+    this.store.dispatch(new Logout());
   }
 
   ngOnDestroy(): void {

@@ -35,32 +35,6 @@ export class AuthService {
         this.store.dispatch(new TryRefreshToken());
       })
     )
-      // switchMap(() => {
-      //   if(localStorage.getItem('jwt')){
-      //     console.log('try refresh token');
-      //     return this.http.get<string>('api/auth/refresh-token').pipe(
-      //       tap((token: string) => {
-      //         this.jwtToken.next({isAuthenticated: true , token: token});
-      //         localStorage.setItem('jwt',token);
-      //       })
-      //     )
-      //   } else {
-      //     console.log('no token to refresh');
-      //     this.timerSubscription.unsubscribe();
-      //     return EMPTY;
-      //   }
-      // })
-    // ).subscribe(
-    //   () => {},
-    //   error => {
-    //     this.jwtToken.next({
-    //     isAuthenticated: false,
-    //     token: null
-    //   });
-    //   localStorage.removeItem('jwt');
-    //   this.timerSubscription.unsubscribe();
-    // }
-    // );
   }
 
   private initToken(): void {
@@ -94,12 +68,7 @@ export class AuthService {
   }
 
   public logout(){
-    this.jwtToken.next({
-      isAuthenticated: false,
-      token: null
-    });
     localStorage.removeItem('jwt');
     this.router.navigate(['/signin']);
-    this.userService.currentUser.next(null);
   }
 }
