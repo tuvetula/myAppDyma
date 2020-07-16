@@ -40,8 +40,7 @@ export class SigninComponent implements OnInit {
 
   public submit(): void {
     if (!this.changeStatusForm()) {
-      this.authService.signin(this.signinForm.value).subscribe((value) => {
-        console.log(value);
+      this.authService.signin(this.signinForm.value).subscribe(() => {
         this.router.navigate(["/"]);
       },
       err => this.errorConnection = err.error);

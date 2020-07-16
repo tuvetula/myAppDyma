@@ -4,7 +4,6 @@ const User = require("../models/user.model");
 const bcrypt = require("bcrypt");
 //Librairie creation token
 const jwt = require("jsonwebtoken");
-
 const fs = require("fs");
 const RSA_PRIVATE_KEY = fs.readFileSync("./rsa/key");
 
@@ -27,7 +26,7 @@ router.post("/signin", (req, res) => {
   User.findOne({ email: req.body.email }).exec((err, user) => {
     if (user && bcrypt.compareSync(req.body.password, user.password)) {
       const token = jwt.sign({}, RSA_PRIVATE_KEY, {
-        algorithm: "HS256",
+        algorithm: "RS256",
         subject: user._id.toString(),
       });
       res.status(200).json(token);

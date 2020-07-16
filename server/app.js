@@ -15,7 +15,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "../public")));
 
 mongoose.connect(
-  "mongodb+srv://tuvetula:Roxane2013@cluster0-d7nbk.gcp.mongodb.net/angularCoursJs?retryWrites=true&w=majority",
+ "mongodb+srv://tuvetula:Tuvetul@1982@cluster0.dz70q.gcp.mongodb.net/dyma_Angular_Cours?retryWrites=true&w=majority",
   { keepAlive: true, useUnifiedTopology: true, useNewUrlParser: true },
   (err) => {
     if (err) {
@@ -28,8 +28,8 @@ mongoose.connect(
 
 app.use(index);
 
-app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "../public/index.html"));
-});
+// app.get("*", (req, res) => {
+//   res.sendFile(path.join(__dirname, "../public/index.html"));
+// });
 
 module.exports = app;
