@@ -8,6 +8,7 @@ import {
   SIGNIN_SUCCESS,
   LOGOUT,
 } from "../actions/auth.actions";
+import { LOCAL_STORAGE_TOKEN } from '../../models/jwt-token.model';
 
 export interface AuthState {
   user: User;
@@ -17,7 +18,15 @@ export interface AuthState {
   success: string;
 }
 
-export function authReducer(state: AuthState, action: AuthActions) {
+const initialState: AuthState = {
+    user: null,
+    isLoggedIn: false,
+    token: localStorage.getItem(LOCAL_STORAGE_TOKEN),
+    error: null,
+    success: null
+}
+
+export function authReducer(state: AuthState = initialState, action: AuthActions) {
   switch (action.type) {
     case SIGNUP_SUCCESS: {
       return { ...state, success: action.payload };

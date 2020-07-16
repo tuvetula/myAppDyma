@@ -13,15 +13,27 @@ import {
   TRY_REFRESH_TOKEN,
   LOGOUT,
 } from "../actions/auth.actions";
-import { map, switchMap, catchError, tap } from "rxjs/operators";
+import {
+  map,
+  switchMap,
+  catchError,
+  tap,
+  withLatestFrom,
+} from "rxjs/operators";
 import { User } from "../../models/user.model";
 import { AuthService } from "../../services/auth.service";
 import { Router } from "@angular/router";
 import { of, Subscription, empty } from "rxjs";
 import { CredentialModel } from "../../models/credential.model";
+import { LOCAL_STORAGE_TOKEN } from "../../models/jwt-token.model";
+import { Store, select } from "@ngrx/store";
+import { State } from "..";
+import { authTokenSelector } from "../selectors/auth.selectors";
 
 @Injectable()
 export class AuthEffects {
+  //Effet suite au dispatch de l'action trySignup,
+  //On tente l'enregistrement, redirige l'utilisateur et lance l'action SignupSuccess
   @Effect() trySignup$ = this.actions$.pipe(
     ofType(TRY_SIGNUP),
     map((action: TrySignup) => action.payload),
@@ -37,6 +49,7 @@ export class AuthEffects {
     })
   );
 
+  //TRY SIGNIN
   //Effet suite au dispatch de l'action trySignin,
   //On tente la connexion, recupere le token et lance l'action signinSuccess
   @Effect() trySignin$ = this.actions$.pipe(
@@ -46,7 +59,7 @@ export class AuthEffects {
       return this.authService.signin(credentials);
     }),
     map((token: string) => {
-      localStorage.setItem("jwtToken", token);
+      localStorage.setItem(LOCAL_STORAGE_TOKEN, token);
       return new SigninSuccess(token);
     }),
     catchError((error: any) => {
@@ -54,48 +67,57 @@ export class AuthEffects {
     })
   );
 
+  //SIGNIN SUCCESS
   //Effet suite au dispatch de l'action signinSuccess,
   //On lance le timer pour refreshToken si le timer n'est pas déja subscribe
   //On indique que cet effet ne lancera pas de nouvelle action
-  @Effect({dispatch: false}) signinSuccess$ = this.actions$.pipe(
+  @Effect({ dispatch: false }) signinSuccess$ = this.actions$.pipe(
     ofType(SIGNIN_SUCCESS),
     tap(() => {
-        if(!this.timerSubscription){
-            this.timerSubscription = this.authService.initTimer().subscribe();
-        }
-        this.router.navigate(['/'])
+      if (!this.timerSubscription) {
+        this.timerSubscription = this.authService.initTimer().subscribe();
+      }
+      this.router.navigate(["/"]);
     })
   );
 
+  //TRY REFRESH TOKEN
   //Effet suite au dispatch de l'action tryRefreshToken,
   //On tente de refresh le token avec la requete http et lance l'action SigninSuccess
   @Effect() tryRefreshToken$ = this.actions$.pipe(
     ofType(TRY_REFRESH_TOKEN),
-    switchMap(() => {
-      return this.authService.refreshToken();
-    }),
-    map((token: string) => {
-        localStorage.setItem("jwtToken", token);
-        return new SigninSuccess(token);
-      }),
-      catchError((error: any) => {
-          localStorage.removeItem('jwtToken');
-          if(this.timerSubscription){
+    withLatestFrom(this.store.pipe(select(authTokenSelector))),
+    switchMap(([action, token]) => {
+      if (token) {
+        return this.authService.refreshToken().pipe(
+          map((token: string) => {
+            localStorage.setItem(LOCAL_STORAGE_TOKEN, token);
+            return new SigninSuccess(token);
+          }),
+          catchError((error: any) => {
+            localStorage.removeItem(LOCAL_STORAGE_TOKEN);
+            if (this.timerSubscription) {
               this.timerSubscription.unsubscribe();
-          }
-          return empty();
-      })
+            }
+            return empty();
+          })
+        );
+      } else {
+        return empty();
+      }
+    })
   );
-  //Effet suite au dispatch de l'action tryRefreshToken,
-  //On tente de refresh le token avec la requete http et lance l'action SigninSuccess
-  @Effect({dispatch: false}) logout$ = this.actions$.pipe(
+
+  //Effet suite au dispatch de l'action logout,
+  //On unsubscribe au timer, remove local storage et redirige sur page d'accueil
+  @Effect({ dispatch: false }) logout$ = this.actions$.pipe(
     ofType(LOGOUT),
     tap(() => {
-        if(this.timerSubscription){
-            this.timerSubscription.unsubscribe();
-        }
-        localStorage.removeItem('jwtToken');
-        this.router.navigate(['/signin']);
+      if (this.timerSubscription) {
+        this.timerSubscription.unsubscribe();
+      }
+      localStorage.removeItem(LOCAL_STORAGE_TOKEN);
+      this.router.navigate(["/"]);
     })
   );
   private timerSubscription: Subscription;
@@ -103,6 +125,7 @@ export class AuthEffects {
   constructor(
     private actions$: Actions,
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private store: Store<State>
   ) {}
 }

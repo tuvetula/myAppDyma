@@ -1,8 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Subscription, Observable } from 'rxjs';
-import { AuthService } from '../../services/auth.service';
-import { JwtToken } from "../../models/jwt-token.model";
-import { Router } from '@angular/router';
+import { Observable } from 'rxjs';
 import { Store, select } from '@ngrx/store';
 import { State } from '../../store';
 import { authIsLoggedInSelector } from '../../store/selectors/auth.selectors';
@@ -13,7 +10,7 @@ import { Logout } from '../../store/actions/auth.actions';
   templateUrl: './topbar.component.html',
   styleUrls: ['./topbar.component.css']
 })
-export class TopbarComponent implements OnInit , OnDestroy{
+export class TopbarComponent implements OnInit {
   public isLoggedIn$: Observable<boolean>;
 
   constructor(
@@ -25,11 +22,7 @@ export class TopbarComponent implements OnInit , OnDestroy{
       select(authIsLoggedInSelector)
     )
   }
-
   public logout(){
     this.store.dispatch(new Logout());
-  }
-
-  ngOnDestroy(): void {
   }
 }

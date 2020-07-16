@@ -1,6 +1,3 @@
-export interface JwtToken {
-    isAuthenticated: boolean,
-    token: string
-}
+export const LOCAL_STORAGE_TOKEN = "jwtToken";
 
 
