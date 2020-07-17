@@ -6,6 +6,7 @@ import {
   FETCH_PHOTOS_SUCCESS,
   SetFilter,
   FetchPhotos,
+  FetchPhotosSuccess,
 } from "./photos.action";
 import { map, switchMap, take, tap, debounceTime } from "rxjs/operators";
 import { Injectable } from "@angular/core";
@@ -13,29 +14,18 @@ import { Store, select } from "@ngrx/store";
 import { photosFilterSelector } from "./photos.selectors";
 import { State } from "src/app/shared/store";
 import { empty } from "rxjs";
+import { PhotoModel } from '../models/photos.model';
 
 @Injectable()
 export class PhotosEffects {
-    @Effect() setFilter$ = this.actions$.pipe(
-      ofType(SET_FILTER),
-      map((action: SetFilter) => action.payload),
-      debounceTime(1000),
-      map((filter: string) => {
-        return new FetchPhotos();
-      })
-    );
-
-    @Effect({dispatch: false}) fetchPhotos$ = this.actions$.pipe(
+    @Effect() fetchPhotos$ = this.actions$.pipe(
       ofType(FETCH_PHOTOS),
-      switchMap(() => {
-        return this.store.pipe(select(photosFilterSelector), take(1));
-      }),
-      tap((filter: string) => console.log("search ", filter)),
-    );
-    @Effect() fetchPhotosSuccess$ = this.actions$.pipe(
-        ofType(FETCH_PHOTOS_SUCCESS),
-
-    );
+      debounceTime(1000),
+      switchMap(() => this.store.pipe(select(photosFilterSelector), take(1))),
+      switchMap((filter: string) => this.photosService.getPictures(filter)),
+      map((photos: PhotoModel[]) => new FetchPhotosSuccess(photos))
+      )
+    ;
 
   constructor(
     private actions$: Actions,

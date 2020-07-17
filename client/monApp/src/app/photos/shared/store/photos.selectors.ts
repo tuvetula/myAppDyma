@@ -13,3 +13,14 @@ export const photosFilterSelector = createSelector(
     }
   }
 );
+
+export const photosPhotosSelector = createSelector(
+  photosSelector,
+  (photosState: PhotosState) => {
+    if (photosState) {
+      return photosState.photos;
+    } else {
+      return null;
+    }
+  }
+);

@@ -22,7 +22,7 @@ export class AuthService {
 
   //Fonction gérant le refresh-token
   public initTimer(){
-    return interval(5000).pipe(
+    return interval(300000).pipe(
       tap(() => {
         this.store.dispatch(new TryRefreshToken());
       })
