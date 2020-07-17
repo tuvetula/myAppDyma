@@ -28,7 +28,7 @@ export class SigninComponent implements OnInit {
       minlength: "Le mot de passe est composé d'au moins 8 caractères.",
     },
   };
-  public signinError$: Observable<string>;
+  public signinError$: Observable<{message: string}>;
 
   constructor(
     private fb: FormBuilder,

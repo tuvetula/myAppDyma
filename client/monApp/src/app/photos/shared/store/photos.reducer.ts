@@ -8,7 +8,7 @@ export interface PhotosState {
     filter: string
 }
 
-const initialState = {
+export const initialState = {
     photos: null,
     filter: null
 }

@@ -15,7 +15,7 @@ export const authErrorSelector = createSelector(
 export const authSuccessSelector = createSelector(
   authSelector,
   (authState: AuthState) => {
-    if (authState && authState.success) {
+    if (authState) {
       return authState.success;
     } else {
       return null;

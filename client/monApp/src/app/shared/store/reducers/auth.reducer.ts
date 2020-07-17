@@ -14,11 +14,11 @@ export interface AuthState {
   user: User;
   isLoggedIn: boolean;
   token: string;
-  error: string;
-  success: string;
+  error: {message: string};
+  success: {message:string};
 }
 
-const initialState: AuthState = {
+export const initialState: AuthState = {
     user: null,
     isLoggedIn: false,
     token: localStorage.getItem(LOCAL_STORAGE_TOKEN),
@@ -46,7 +46,7 @@ export function authReducer(state: AuthState = initialState, action: AuthActions
         isLoggedIn: false,
         token: null,
         error: null,
-        success: null,
+        success: null
       };
     }
     case SET_CURRENT_USER: {

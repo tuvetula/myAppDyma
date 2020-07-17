@@ -14,7 +14,6 @@ import {
   LOGOUT,
   TRY_FETCH_CURRENT_USER,
   SetCurrentUser,
-  SET_CURRENT_USER,
 } from "../actions/auth.actions";
 import {
   map,
@@ -46,10 +45,10 @@ export class AuthEffects {
     }),
     switchMap(() => {
       this.router.navigate(["/signin"]);
-      return of(new SignupSuccess("Inscription réussite"));
+      return of(new SignupSuccess({message: "Inscription réussie"}));
     }),
     catchError((error) => {
-      return of(new SignupError(error));
+      return of(new SignupError({message:'error'}));
     })
   );
 

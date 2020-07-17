@@ -4,9 +4,7 @@ import { AuthService } from "src/app/shared/services/auth.service";
 import { Router } from "@angular/router";
 import { Store, select } from "@ngrx/store";
 import { State } from "src/app/shared/store";
-import {
-  TrySignup,
-} from "src/app/shared/store/actions/auth.actions";
+import { TrySignup } from "src/app/shared/store/actions/auth.actions";
 import { authErrorSelector } from "src/app/shared/store/selectors/auth.selectors";
 import { Observable, of } from "rxjs";
 
@@ -17,7 +15,7 @@ import { Observable, of } from "rxjs";
 })
 export class SignupComponent implements OnInit {
   public signupForm: FormGroup;
-  public errorSignup$: Observable<string>;
+  public errorSignup$: Observable<{ message: string }>;
   constructor(
     private authService: AuthService,
     private router: Router,
@@ -59,9 +57,9 @@ export class SignupComponent implements OnInit {
         })
       );
     } else {
-      this.errorSignup$ = of<string>(
-        "Les 2 mots de passe ne sont pas identiques."
-      );
+      this.errorSignup$ = of<{ message: string }>({
+        message: "Les 2 mots de passe ne sont pas identiques.",
+      });
     }
   }
 }

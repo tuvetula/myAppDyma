@@ -23,11 +23,11 @@ export class TrySignup implements Action {
 }
 export class SignupSuccess implements Action {
   readonly type = SIGNUP_SUCCESS;
-  constructor(public payload: string) {}
+  constructor(public payload: {message: string}) {}
 }
 export class SignupError implements Action {
   readonly type = SIGNUP_ERROR;
-  constructor(public payload: any) {}
+  constructor(public payload: {message: string}) {}
 }
 export class TrySignin implements Action {
   readonly type = TRY_SIGNIN;
@@ -39,7 +39,7 @@ export class SigninSuccess implements Action {
 }
 export class SigninError implements Action {
   readonly type = SIGNIN_ERROR;
-  constructor(public payload: any) {}
+  constructor(public payload: {message: string}) {}
 }
 export class TryRefreshToken implements Action {
   readonly type = TRY_REFRESH_TOKEN;
