@@ -8,32 +8,47 @@ export const authErrorSelector = createSelector(
     if (authState) {
       return authState.error;
     } else {
-        return null;
+      return null;
     }
   }
 );
 export const authSuccessSelector = createSelector(
-    authSelector,
-    (authState: AuthState) => {
-      if (authState && authState.success) {
-        return authState.success;
-      }
+  authSelector,
+  (authState: AuthState) => {
+    if (authState && authState.success) {
+      return authState.success;
+    } else {
+      return null;
     }
-  );
-  export const authTokenSelector = createSelector(
-    authSelector,
-    (authState: AuthState) => {
-      if (authState) {
-        return authState.token;
-      }
+  }
+);
+export const authTokenSelector = createSelector(
+  authSelector,
+  (authState: AuthState) => {
+    if (authState) {
+      return authState.token;
+    } else {
+      return null;
     }
-  );
-  export const authIsLoggedInSelector = createSelector(
-    authSelector,
-    (authState: AuthState) => {
-      if (authState) {
-        return authState.isLoggedIn;
-      }
+  }
+);
+export const authIsLoggedInSelector = createSelector(
+  authSelector,
+  (authState: AuthState) => {
+    if (authState) {
+      return authState.isLoggedIn;
+    } else {
+      return false;
     }
-  );
-
+  }
+);
+export const authCurrentUserSelector = createSelector(
+  authSelector,
+  (authState: AuthState) => {
+    if (authState) {
+      return authState.user;
+    } else {
+      return null;
+    }
+  }
+);

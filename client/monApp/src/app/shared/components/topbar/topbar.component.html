@@ -1,5 +1,6 @@
 <mat-toolbar color="primary" fxLayoutGap="15px">
   <span class="link" routerLink="/">DymaAws</span>
+  <span class="link" [routerLink]="['/photos']" routerLinkActive="active" >Photos</span>
   <span fxFlex="auto"></span>
   <div
     *ngIf="!(isLoggedIn$ | async)"

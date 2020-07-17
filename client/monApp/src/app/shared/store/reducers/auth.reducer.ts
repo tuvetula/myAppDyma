@@ -1,5 +1,4 @@
 import { User } from "../../models/user.model";
-import { Action } from "@ngrx/store";
 import {
   AuthActions,
   SIGNUP_ERROR,
@@ -7,6 +6,7 @@ import {
   SIGNIN_ERROR,
   SIGNIN_SUCCESS,
   LOGOUT,
+  SET_CURRENT_USER,
 } from "../actions/auth.actions";
 import { LOCAL_STORAGE_TOKEN } from '../../models/jwt-token.model';
 
@@ -26,7 +26,7 @@ const initialState: AuthState = {
     success: null
 }
 
-export function authReducer(state: AuthState = initialState, action: AuthActions) {
+export function authReducer(state: AuthState = initialState, action: AuthActions): AuthState {
   switch (action.type) {
     case SIGNUP_SUCCESS: {
       return { ...state, success: action.payload };
@@ -48,6 +48,12 @@ export function authReducer(state: AuthState = initialState, action: AuthActions
         error: null,
         success: null,
       };
+    }
+    case SET_CURRENT_USER: {
+        return {
+            ...state,
+            user: action.payload
+        }
     }
   }
   return state;

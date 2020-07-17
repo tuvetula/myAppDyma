@@ -1,20 +1,23 @@
-import { Component, OnInit } from '@angular/core';
-import { User } from '../shared/models/user.model';
-import { UserService } from '../shared/services/user.service';
-import { Observable } from 'rxjs';
+import { Component, OnInit } from "@angular/core";
+import { User } from "../shared/models/user.model";
+import { Observable } from "rxjs";
+import { Store, select } from "@ngrx/store";
+import { State } from "../shared/store";
+import { TryFetchCurrentUser } from "../shared/store/actions/auth.actions";
+import { authCurrentUserSelector } from "../shared/store/selectors/auth.selectors";
 
 @Component({
-  selector: 'app-profile',
-  templateUrl: './profile.component.html',
-  styleUrls: ['./profile.component.css']
+  selector: "app-profile",
+  templateUrl: "./profile.component.html",
+  styleUrls: ["./profile.component.css"],
 })
 export class ProfileComponent implements OnInit {
-  public currentUser: Observable<User>;
+  public currentUser$: Observable<User>;
 
-  constructor(private userService: UserService) { }
+  constructor(private store: Store<State>) {}
 
   ngOnInit() {
-    this.currentUser = this.userService.getCurrentUser();
+    this.store.dispatch(new TryFetchCurrentUser());
+    this.currentUser$ = this.store.pipe(select(authCurrentUserSelector));
   }
-
 }

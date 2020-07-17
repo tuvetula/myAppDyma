@@ -9,12 +9,14 @@ import { SignupComponent } from './components/signup/signup.component';
 
 //Guards
 import { AuthGuard } from './shared/guards/auth.guard';
+import { PhotosModule } from './photos/photos.module';
 
 const routes: Routes = [
   { path: "", component: HomepageComponent, pathMatch: "full" },
   { path: "signin" , component: SigninComponent },
   { path: "signup" , component: SignupComponent },
   { path: "profile" , canActivate:[AuthGuard] , loadChildren: () => ProfileModule},
+  { path: "photos" , loadChildren: () => PhotosModule},
   { path: "**", component: PageNotFoundComponent },
 ];
 

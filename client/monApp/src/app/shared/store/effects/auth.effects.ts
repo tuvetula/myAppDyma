@@ -12,6 +12,9 @@ import {
   SIGNIN_SUCCESS,
   TRY_REFRESH_TOKEN,
   LOGOUT,
+  TRY_FETCH_CURRENT_USER,
+  SetCurrentUser,
+  SET_CURRENT_USER,
 } from "../actions/auth.actions";
 import {
   map,
@@ -29,6 +32,7 @@ import { LOCAL_STORAGE_TOKEN } from "../../models/jwt-token.model";
 import { Store, select } from "@ngrx/store";
 import { State } from "..";
 import { authTokenSelector } from "../selectors/auth.selectors";
+import { UserService } from '../../services/user.service';
 
 @Injectable()
 export class AuthEffects {
@@ -120,11 +124,27 @@ export class AuthEffects {
       this.router.navigate(["/"]);
     })
   );
+
+  //Effet suite au dispatch de l'action fetchCurrentUser
+  @Effect() fetchCurrentUser$ = this.actions$.pipe(
+      ofType(TRY_FETCH_CURRENT_USER),
+      switchMap(() => {
+          return this.userService.getCurrentUser();
+      }),
+      map((user: User) => {
+          return new SetCurrentUser(user);
+      }),
+      catchError((error: any) => {
+          return of(error);
+      })
+  )
+  
   private timerSubscription: Subscription;
 
   constructor(
     private actions$: Actions,
     private authService: AuthService,
+    private userService: UserService,
     private router: Router,
     private store: Store<State>
   ) {}
