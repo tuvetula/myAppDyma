@@ -7,6 +7,7 @@ import {
   SIGNIN_SUCCESS,
   LOGOUT,
   SET_CURRENT_USER,
+  SIGNIN_RESET_ERROR_SUCCESS,
 } from "../actions/auth.actions";
 import { LOCAL_STORAGE_TOKEN } from '../../models/jwt-token.model';
 
@@ -14,7 +15,7 @@ export interface AuthState {
   user: User;
   isLoggedIn: boolean;
   token: string;
-  error: {message: string};
+  error: string;
   success: {message:string};
 }
 
@@ -39,6 +40,9 @@ export function authReducer(state: AuthState = initialState, action: AuthActions
     }
     case SIGNIN_ERROR: {
       return { ...state, error: action.payload };
+    }
+    case SIGNIN_RESET_ERROR_SUCCESS: {
+      return { ...state, error: null , success: null}
     }
     case LOGOUT: {
       return {

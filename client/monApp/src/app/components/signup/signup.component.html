@@ -52,7 +52,7 @@
         <button mat-raised-button color="primary" (click)="submit()">
           Inscription
         </button>
-        <div *ngIf="errorSignup$ | async; let error">{{error.message}}</div>
+        <div *ngIf="errorSignup$ | async; let error">{{error}}</div>
       </form>
     </mat-card-content>
   </mat-card>

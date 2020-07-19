@@ -47,8 +47,8 @@ export class AuthEffects {
       this.router.navigate(["/signin"]);
       return of(new SignupSuccess({message: "Inscription réussie"}));
     }),
-    catchError((error) => {
-      return of(new SignupError({message:'error'}));
+    catchError((error:{error: string}) => {
+      return of(new SignupError(error.error));
     })
   );
 
@@ -59,15 +59,17 @@ export class AuthEffects {
     ofType(TRY_SIGNIN),
     map((action: TrySignin) => action.payload),
     switchMap((credentials: CredentialModel) => {
-      return this.authService.signin(credentials);
+      console.log(credentials);
+      return this.authService.signin(credentials).pipe(
+        map((token: string) => {
+          localStorage.setItem(LOCAL_STORAGE_TOKEN, token);
+          return new SigninSuccess(token);
+        }),
+        catchError((error:{error: string}) => {
+          return of(new SigninError(error.error));
+        })
+      )
     }),
-    map((token: string) => {
-      localStorage.setItem(LOCAL_STORAGE_TOKEN, token);
-      return new SigninSuccess(token);
-    }),
-    catchError((error: any) => {
-      return of(new SigninError(error));
-    })
   );
 
   //SIGNIN SUCCESS

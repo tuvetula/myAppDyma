@@ -9,6 +9,7 @@ export const SIGNUP_ERROR = "[ user ] signup error";
 export const TRY_SIGNIN = "[ user ] try signin";
 export const SIGNIN_SUCCESS = "[ user ] signin success";
 export const SIGNIN_ERROR = "[ user ] signin error";
+export const SIGNIN_RESET_ERROR_SUCCESS = "[ user ] signin reset error success";
 
 export const LOGOUT = "[ user ] logout";
 
@@ -27,7 +28,7 @@ export class SignupSuccess implements Action {
 }
 export class SignupError implements Action {
   readonly type = SIGNUP_ERROR;
-  constructor(public payload: {message: string}) {}
+  constructor(public payload: string) {}
 }
 export class TrySignin implements Action {
   readonly type = TRY_SIGNIN;
@@ -39,7 +40,10 @@ export class SigninSuccess implements Action {
 }
 export class SigninError implements Action {
   readonly type = SIGNIN_ERROR;
-  constructor(public payload: {message: string}) {}
+  constructor(public payload: string) {}
+}
+export class SigninResetErrorSuccess implements Action {
+  readonly type = SIGNIN_RESET_ERROR_SUCCESS;
 }
 export class TryRefreshToken implements Action {
   readonly type = TRY_REFRESH_TOKEN;
@@ -63,6 +67,7 @@ export type AuthActions =
   | TrySignin
   | SigninSuccess
   | SigninError
+  | SigninResetErrorSuccess
   | TryRefreshToken
   | Logout
   | TryFetchCurrentUser

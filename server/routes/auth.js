@@ -33,7 +33,7 @@ router.post("/signin", (req, res) => {
       });
       res.status(200).json(token);
     } else {
-      res.status(401).json("signin fail!");
+      res.status(401).json("Echec authentification.");
     }
   });
 });

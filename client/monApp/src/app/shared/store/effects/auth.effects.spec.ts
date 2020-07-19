@@ -14,7 +14,8 @@ import { HttpClientModule } from "@angular/common/http";
 describe("AUTH EFFECTS", () => {
   let actions: Observable<any>;
   let effects: AuthEffects;
-  let fakeAuth;
+  //On crée un spy pour faire ce que l'on veut lorsque la méthode est appellée
+  let fakeAuth = jasmine.createSpyObj("authService", ["signup" , "signin"]);
   const user: User = {
     name: "name",
     firstName: "firstName",
@@ -22,55 +23,110 @@ describe("AUTH EFFECTS", () => {
     password: "password",
   };
 
-  describe('trySignup effect', () => {
+  describe("trySignup effect", () => {
     beforeEach(() => {
-        //On crée un spy pour faire ce que l'on veut lorsque la méthode est appellée
-        fakeAuth = jasmine.createSpyObj("authService", ["signup"]);
-        TestBed.configureTestingModule({
-          imports: [
-            //Fournit le service httpClient
-            HttpClientModule,
-            //Fournit le store
-            StoreModule.forRoot({}),
-            //Simule un faux router
-            RouterTestingModule.withRoutes([
-              { path: "signin", component: {} as any },
-            ]),
-          ],
-          providers: [
-            AuthEffects,
-            //Represente le flux d'actions$ du store
-            //Permet de fournir un observable que nous pourrons configurer pour simuler n'importe quelles actions
-            provideMockActions(() => actions),
-            UserService,
-            //Faux service AuthService
-            {
-              provide: AuthService,
-              useValue: fakeAuth,
-            },
-          ],
-        });
-        effects = TestBed.get(AuthEffects);
+      TestBed.configureTestingModule({
+        imports: [
+          //Fournit le service httpClient
+          HttpClientModule,
+          //Fournit le store
+          StoreModule.forRoot({}),
+          //Simule un faux router
+          RouterTestingModule.withRoutes([
+            { path: "signup", component: {} as any },
+          ]),
+        ],
+        providers: [
+          AuthEffects,
+          //Represente le flux d'actions$ du store
+          //Permet de fournir un observable que nous pourrons configurer pour simuler n'importe quelles actions
+          provideMockActions(() => actions),
+          UserService,
+          //Faux service AuthService
+          {
+            provide: AuthService,
+            useValue: fakeAuth,
+          },
+        ],
       });
-    
-      it("should return empty", () => {
-        fakeAuth.signup.and.returnValue(of(user));
-        actions = hot("---a-", { a: new AuthActions.TrySignup(user) });
-        const expected = cold("---a-", {
-          a: new AuthActions.SignupSuccess({ message: "Inscription réussie" }),
-        });
-        expect(effects.trySignup$).toBeObservable(expected);
+      effects = TestBed.get(AuthEffects);
+    });
+
+    it("should return empty", () => {
+      fakeAuth.signup.and.returnValue(of(user));
+      actions = hot("---a-", { a: new AuthActions.TrySignup(user) });
+      const expected = cold("---a-", {
+        a: new AuthActions.SignupSuccess({ message: "Inscription réussie" }),
       });
-    
-      it("should return error", () => {
-        fakeAuth.signup.and.throwError({ message: "error" });
-        actions = hot("---a-", { a: new AuthActions.TrySignup(user) });
-        const expected = cold("---(a|)", {
-          a: new AuthActions.SignupError({ message: "error" }),
-        });
-    
-        expect(effects.trySignup$).toBeObservable(expected);
+      expect(effects.trySignup$).toBeObservable(expected);
+    });
+
+    it("should return error", () => {
+    fakeAuth.signup.and.throwError('error');
+      actions = hot("---a-", { a: new AuthActions.TrySignup(user) });
+      const expected = cold("---(a|)", {
+        a: new AuthActions.SignupError("error"),
       });
-  })
-  
+      expect(effects.trySignup$).toBeObservable(expected);
+    });
+  });
+
+  //TRY SIGNIN
+  describe("trySignin effect", () => {
+    beforeEach(() => {
+      TestBed.configureTestingModule({
+        imports: [
+          //Fournit le service httpClient
+          HttpClientModule,
+          //Fournit le store
+          StoreModule.forRoot({}),
+          //Simule un faux router
+          RouterTestingModule.withRoutes([
+            { path: "signin", component: {} as any },
+          ]),
+        ],
+        providers: [
+          AuthEffects,
+          //Represente le flux d'actions$ du store
+          //Permet de fournir un observable que nous pourrons configurer pour simuler n'importe quelles actions
+          provideMockActions(() => actions),
+          UserService,
+          //Faux service AuthService
+          {
+            provide: AuthService,
+            useValue: fakeAuth,
+          },
+        ],
+      });
+      effects = TestBed.get(AuthEffects);
+    });
+
+    it("should return token", () => {
+      fakeAuth.signin.and.returnValue(of("token"));
+      actions = hot("---a-", {
+        a: new AuthActions.TrySignin({
+          email: "test@test.fr",
+          password: "password",
+        }),
+      });
+      const expected = cold("---a-", {
+        a: new AuthActions.SigninSuccess("token"),
+      });
+      expect(effects.trySignin$).toBeObservable(expected);
+    });
+
+    it("should return error", () => {
+      fakeAuth.signin.and.throwError("error");
+      actions = hot("---a-", {
+        a: new AuthActions.TrySignin({
+          email: "test@test.fr",
+          password: "password",
+        }),
+      });
+      const expected = cold("---(b|)", {
+        b: new AuthActions.SigninError("error"),
+      });
+      expect(effects.trySignin$).toBeObservable(expected);
+    });
+  });
 });

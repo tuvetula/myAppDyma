@@ -15,7 +15,7 @@ import { Observable, of } from "rxjs";
 })
 export class SignupComponent implements OnInit {
   public signupForm: FormGroup;
-  public errorSignup$: Observable<{ message: string }>;
+  public errorSignup$: Observable<string>;
   constructor(
     private authService: AuthService,
     private router: Router,
@@ -57,9 +57,7 @@ export class SignupComponent implements OnInit {
         })
       );
     } else {
-      this.errorSignup$ = of<{ message: string }>({
-        message: "Les 2 mots de passe ne sont pas identiques.",
-      });
+      this.errorSignup$ = of<string>("Les 2 mots de passe ne sont pas identiques.");
     }
   }
 }

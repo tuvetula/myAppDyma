@@ -1,10 +1,10 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, OnDestroy } from "@angular/core";
 import { FormGroup, FormBuilder, Validators } from "@angular/forms";
 import { AuthService } from "src/app/shared/services/auth.service";
 import { Router } from "@angular/router";
 import { Store, select } from '@ngrx/store';
 import { State } from '../../shared/store/index';
-import { TrySignin } from 'src/app/shared/store/actions/auth.actions';
+import { TrySignin, SigninResetErrorSuccess } from 'src/app/shared/store/actions/auth.actions';
 import { Observable } from 'rxjs';
 import { authErrorSelector } from 'src/app/shared/store/selectors/auth.selectors';
 
@@ -13,7 +13,7 @@ import { authErrorSelector } from 'src/app/shared/store/selectors/auth.selectors
   templateUrl: "./signin.component.html",
   styleUrls: ["./signin.component.css"],
 })
-export class SigninComponent implements OnInit {
+export class SigninComponent implements OnInit, OnDestroy {
   public signinForm: FormGroup;
   public errorsForm: { email: string; password: string } = {
     email: "",
@@ -28,7 +28,7 @@ export class SigninComponent implements OnInit {
       minlength: "Le mot de passe est composé d'au moins 8 caractères.",
     },
   };
-  public signinError$: Observable<{message: string}>;
+  public signinError$: Observable<string>;
 
   constructor(
     private fb: FormBuilder,
@@ -72,5 +72,9 @@ export class SigninComponent implements OnInit {
     } else {
       return false;
     }
+  }
+  ngOnDestroy(): void {
+    this.signinForm.reset();
+    this.store.dispatch(new SigninResetErrorSuccess());
   }
 }
