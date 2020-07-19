@@ -16,9 +16,9 @@ describe("AUTH REDUCERS", () => {
   });
   it("should return SIGNUP_ERROR", () => {
     const initialState = authReducers.initialState;
-    const action = new authActions.SignupError({message:'error'});
+    const action = new authActions.SignupError('error');
     const newState = authReducers.authReducer(initialState,action);
-    expect(newState.error).toEqual({message:'error'});
+    expect(newState.error).toEqual('error');
   });
   it("should return SIGNIN_SUCCESS", () => {
     const initialState = authReducers.initialState;
@@ -28,9 +28,9 @@ describe("AUTH REDUCERS", () => {
   });
   it("should return SIGNIN_ERROR", () => {
     const initialState = authReducers.initialState;
-    const action = new authActions.SigninError({message:'error'});
+    const action = new authActions.SigninError('error');
     const newState = authReducers.authReducer(initialState,action);
-    expect(newState.error).toEqual({message:'error'});
+    expect(newState.error).toEqual('error');
   });
   it("should return LOGOUT", () => {
     const initialState = authReducers.initialState;

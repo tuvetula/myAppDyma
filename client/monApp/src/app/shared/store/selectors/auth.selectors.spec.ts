@@ -6,7 +6,7 @@ const state: State = {
     user: null,
     isLoggedIn: false,
     token: null,
-    error: { message: null },
+    error: null,
     success: { message: null },
   },
 };
@@ -40,7 +40,7 @@ describe("AUTH SELECTORS", () => {
         ...state,
         auth: {
           ...state.auth,
-          error: { message: "error" },
+          error: "error"
         },
       };
       expect(authSelectors.authErrorSelector(mockState)).toEqual(
@@ -49,9 +49,7 @@ describe("AUTH SELECTORS", () => {
     });
     it("should return null", () => {
       const mockState: State = state;
-      expect(authSelectors.authErrorSelector(mockState)).toEqual({
-        message: null,
-      });
+      expect(authSelectors.authErrorSelector(mockState)).toEqual(null);
     });
   });
   // TOKEN

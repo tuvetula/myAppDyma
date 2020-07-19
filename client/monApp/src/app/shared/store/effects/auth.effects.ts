@@ -14,6 +14,7 @@ import {
   LOGOUT,
   TRY_FETCH_CURRENT_USER,
   SetCurrentUser,
+  SIGNUP_SUCCESS,
 } from "../actions/auth.actions";
 import {
   map,
@@ -21,6 +22,7 @@ import {
   catchError,
   tap,
   withLatestFrom,
+  exhaustMap,
 } from "rxjs/operators";
 import { User } from "../../models/user.model";
 import { AuthService } from "../../services/auth.service";
@@ -31,25 +33,31 @@ import { LOCAL_STORAGE_TOKEN } from "../../models/jwt-token.model";
 import { Store, select } from "@ngrx/store";
 import { State } from "..";
 import { authTokenSelector } from "../selectors/auth.selectors";
-import { UserService } from '../../services/user.service';
+import { UserService } from "../../services/user.service";
 
 @Injectable()
 export class AuthEffects {
+  // TRY SIGNUP
   //Effet suite au dispatch de l'action trySignup,
   //On tente l'enregistrement, redirige l'utilisateur et lance l'action SignupSuccess
   @Effect() trySignup$ = this.actions$.pipe(
     ofType(TRY_SIGNUP),
     map((action: TrySignup) => action.payload),
-    switchMap((user: User) => {
-      return this.authService.signup(user);
-    }),
-    switchMap(() => {
-      this.router.navigate(["/signin"]);
-      return of(new SignupSuccess({message: "Inscription réussie"}));
-    }),
-    catchError((error:{error: string}) => {
-      return of(new SignupError(error.error));
-    })
+    exhaustMap((user: User) =>
+      this.authService.signup(user).pipe(
+        map(() => new SignupSuccess({ message: "Inscription réussie" })),
+        catchError((error: { error: string }) =>
+          of(new SignupError(error.error))
+        )
+      )
+    )
+  );
+
+  //SIGNUP SUCCESS
+  @Effect({ dispatch: false })
+  signupSuccess$ = this.actions$.pipe(
+    ofType(SIGNUP_SUCCESS),
+    tap(() => this.router.navigate(["/signin"]))
   );
 
   //TRY SIGNIN
@@ -59,17 +67,16 @@ export class AuthEffects {
     ofType(TRY_SIGNIN),
     map((action: TrySignin) => action.payload),
     switchMap((credentials: CredentialModel) => {
-      console.log(credentials);
       return this.authService.signin(credentials).pipe(
         map((token: string) => {
           localStorage.setItem(LOCAL_STORAGE_TOKEN, token);
           return new SigninSuccess(token);
         }),
-        catchError((error:{error: string}) => {
-          return of(new SigninError(error.error));
+        catchError((err: { error: string }) => {
+          return of(new SigninError(err.error));
         })
-      )
-    }),
+      );
+    })
   );
 
   //SIGNIN SUCCESS
@@ -128,18 +135,19 @@ export class AuthEffects {
 
   //Effet suite au dispatch de l'action fetchCurrentUser
   @Effect() fetchCurrentUser$ = this.actions$.pipe(
-      ofType(TRY_FETCH_CURRENT_USER),
-      switchMap(() => {
-          return this.userService.getCurrentUser();
-      }),
-      map((user: User) => {
+    ofType(TRY_FETCH_CURRENT_USER),
+    switchMap(() => {
+      return this.userService.getCurrentUser().pipe(
+        map((user: User) => {
           return new SetCurrentUser(user);
-      }),
-      catchError((error: any) => {
+        }),
+        catchError((error: any) => {
           return of(error);
-      })
-  )
-  
+        })
+      );
+    })
+  );
+
   private timerSubscription: Subscription;
 
   constructor(

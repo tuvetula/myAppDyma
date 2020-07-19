@@ -28,7 +28,7 @@ describe("AUTH ACTIONS", () => {
   });
   describe("SignupError action", () => {
     it("should create SignupError action", () => {
-      const payload = { message: "signup error" };
+      const payload = "signup error";
       const action = new authActions.SignupError(payload);
       expect({ ...action }).toEqual({
         type: authActions.SIGNUP_ERROR,
@@ -61,7 +61,7 @@ describe("AUTH ACTIONS", () => {
   });
   describe("SigninError action", () => {
     it("should create SigninError action", () => {
-      const payload = { message: "signin error" };
+      const payload = "signin error";
       const action = new authActions.SigninError(payload);
       expect({ ...action }).toEqual({
         type: authActions.SIGNIN_ERROR,
